@@ -29,7 +29,7 @@ bool http_get(const std::wstring& user_agent, const std::wstring& domain,
 
 	// Use WinHttpOpen to obtain a session handle.
 	hSession = WinHttpOpen(user_agent.c_str(),
-		WINHTTP_ACCESS_TYPE_DEFAULT_PROXY,
+		WINHTTP_ACCESS_TYPE_AUTOMATIC_PROXY,
 		WINHTTP_NO_PROXY_NAME,
 		WINHTTP_NO_PROXY_BYPASS, 0);
 
