@@ -6,19 +6,22 @@
 
 int main()
 {
+	std::wstring verb = L"GET";
 	std::wstring user_agent = L"WinHttp";
 	std::wstring domain = L"localhost";
 	std::wstring rest_of_path = L"/Default?SearchTerm=Hello";
-	std::wstring proxy_username = L"";
-	std::wstring proxy_password = L"";
-	std::wstring server_username = L"";
-	std::wstring server_password = L"";
+	std::wstring proxy_username;
+	std::wstring proxy_password;
+	std::wstring server_username;
+	std::wstring server_password;
 	int port = 54170;
 	std::string output = "";
-	std::wstring error = L"";
-	bool success = http_get(
+	std::wstring error;
+	std::wstring header;
+	std::string input_data;
+	bool success = http(verb,
 		user_agent, domain, rest_of_path, 
-		port, false, output, error,
+		port, false, output, error, header, input_data,
 		proxy_username, proxy_password,
 		server_username, server_password);
 	if (success)

@@ -5,9 +5,9 @@
 // function declaration
 DWORD ChooseAuthScheme(DWORD dwSupportedSchemes);
 
-bool http_get(const std::wstring& user_agent, const std::wstring& domain, 
+bool http(const std::wstring& verb, const std::wstring& user_agent, const std::wstring& domain,
 	const std::wstring& rest_of_path, int port, bool secure,
-	std::string& output, std::wstring& error,
+	std::string& output, std::wstring& error, const std::wstring& header, const std::string& input_data,
 	const std::wstring& szProxyUsername, const std::wstring& szProxyPassword,
 	const std::wstring& szServerUsername, const std::wstring& szServerPassword)
 {
@@ -48,7 +48,7 @@ bool http_get(const std::wstring& user_agent, const std::wstring& domain,
 	if (hConnect)
 	{
 		DWORD flag = secure ? WINHTTP_FLAG_SECURE : 0;
-		hRequest = WinHttpOpenRequest(hConnect, L"GET", rest_of_path.c_str(),
+		hRequest = WinHttpOpenRequest(hConnect, verb.c_str(), rest_of_path.c_str(),
 			NULL, WINHTTP_NO_REFERER,
 			WINHTTP_DEFAULT_ACCEPT_TYPES,
 			WINHTTP_FLAG_REFRESH | flag);
@@ -87,10 +87,20 @@ bool http_get(const std::wstring& user_agent, const std::wstring& domain,
 		// Send a request.
 		if (hRequest)
 		{
-			bResults = WinHttpSendRequest(hRequest,
-				WINHTTP_NO_ADDITIONAL_HEADERS, 0,
-				WINHTTP_NO_REQUEST_DATA, 0,
-				0, 0);
+			if (header.empty())
+			{
+				bResults = WinHttpSendRequest(hRequest,
+					WINHTTP_NO_ADDITIONAL_HEADERS, 0,
+					(LPVOID)input_data.data(), input_data.size(),
+					input_data.size(), 0);
+			}
+			else
+			{
+				bResults = WinHttpSendRequest(hRequest,
+					header.c_str(), header.size(),
+					(LPVOID)input_data.data(), input_data.size(),
+					input_data.size(), 0);
+			}
 			if (!bResults)
 			{
 				error = L"WinHttpSendRequest fails!";
