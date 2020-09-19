@@ -15,15 +15,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="WinHttpGet.cpp">
+    <ClCompile Include="usage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="usage.cpp">
+    <ClCompile Include="WinHttpWrapper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="WinHttpGet.h">
+    <ClInclude Include="WinHttpWrapper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -2,31 +2,26 @@
 //
 
 #include <iostream>
-#include "WinHttpGet.h"
+#include "WinHttpWrapper.h"
 
 int main()
 {
-	std::wstring verb = L"GET";
-	std::wstring user_agent = L"WinHttp";
 	std::wstring domain = L"localhost";
 	std::wstring rest_of_path = L"/Default?SearchTerm=Hello";
-	std::wstring proxy_username;
-	std::wstring proxy_password;
-	std::wstring server_username;
-	std::wstring server_password;
 	int port = 54170;
-	std::string output = "";
+	std::string output;
+	std::wstring responseHeader;
 	std::wstring error;
 	std::wstring header;
-	std::string input_data;
-	bool success = http(verb,
-		user_agent, domain, rest_of_path, 
-		port, false, output, error, header, input_data,
-		proxy_username, proxy_password,
-		server_username, server_password);
+
+	WinHttpWrapper wrapper(domain, port, false);
+	bool success = wrapper.Get(
+		rest_of_path, header,
+		output, responseHeader, error);
 	if (success)
 	{
 		std::cout << "Output:" << output << std::endl;
+		std::wcout << L"ResponseHeader:" << responseHeader << std::endl;
 	}
 	else
 	{

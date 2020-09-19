@@ -1,13 +1,106 @@
-#include "WinHttpGet.h"
+#include "WinHttpWrapper.h"
 #include <winhttp.h>
 #pragma comment(lib, "Winhttp.lib")
 
-// function declaration
-DWORD ChooseAuthScheme(DWORD dwSupportedSchemes);
 
-bool http(const std::wstring& verb, const std::wstring& user_agent, const std::wstring& domain,
+bool WinHttpWrapper::Get(
+	const std::wstring& rest_of_path,
+	const std::wstring& requestHeader,
+	std::string& output,
+	std::wstring& responseHeader,
+	std::wstring& pp_error)
+{
+	static const std::wstring verb = L"GET";
+	static std::string input_data;
+	return Request(
+		verb,
+		rest_of_path,
+		requestHeader,
+		input_data,
+		output,
+		responseHeader,
+		pp_error);
+}
+
+bool WinHttpWrapper::Post(
+	const std::wstring& rest_of_path,
+	const std::wstring& requestHeader,
+	const std::string& input_data,
+	std::string& output,
+	std::wstring& responseHeader,
+	std::wstring& pp_error)
+{
+	static const std::wstring verb = L"POST";
+	return Request(
+		verb,
+		rest_of_path,
+		requestHeader,
+		input_data,
+		output,
+		responseHeader,
+		pp_error);
+}
+
+bool WinHttpWrapper::Put(
+	const std::wstring& rest_of_path,
+	const std::wstring& requestHeader,
+	const std::string& input_data,
+	std::string& output,
+	std::wstring& responseHeader,
+	std::wstring& pp_error)
+{
+	static const std::wstring verb = L"PUT";
+	return Request(
+		verb,
+		rest_of_path,
+		requestHeader,
+		input_data,
+		output,
+		responseHeader,
+		pp_error);
+}
+
+bool WinHttpWrapper::Delete(
+	const std::wstring& rest_of_path,
+	const std::wstring& requestHeader,
+	const std::string& input_data,
+	std::string& output,
+	std::wstring& responseHeader,
+	std::wstring& pp_error)
+{
+	static const std::wstring verb = L"DELETE";
+	return Request(
+		verb,
+		rest_of_path,
+		requestHeader,
+		input_data,
+		output,
+		responseHeader,
+		pp_error);
+}
+
+bool WinHttpWrapper::Request(
+	const std::wstring& verb,
+	const std::wstring& rest_of_path,
+	const std::wstring& requestHeader,
+	const std::string& input_data,
+	std::string& output,
+	std::wstring& responseHeader,
+	std::wstring& pp_error)
+{
+	return http(verb, m_UserAgent, m_Domain,
+		rest_of_path, m_Port, m_Secure,
+		requestHeader, input_data,
+		output, responseHeader, pp_error, 
+		m_ProxyUsername, m_ProxyPassword,
+		m_ServerUsername, m_ServerPassword);
+}
+
+
+bool WinHttpWrapper::http(const std::wstring& verb, const std::wstring& user_agent, const std::wstring& domain,
 	const std::wstring& rest_of_path, int port, bool secure,
-	std::string& output, std::wstring& error, const std::wstring& header, const std::string& input_data,
+	const std::wstring& requestHeader, const std::string& input_data,
+	std::string& output, std::wstring& responseHeader, std::wstring& error,
 	const std::wstring& szProxyUsername, const std::wstring& szProxyPassword,
 	const std::wstring& szServerUsername, const std::wstring& szServerPassword)
 {
@@ -19,7 +112,6 @@ bool http(const std::wstring& verb, const std::wstring& user_agent, const std::w
 	DWORD dwLastStatus = 0;
 	DWORD dwSize = 0;
 	DWORD dwDownloaded = 0;
-	//LPSTR pszOutBuffer;
 	BOOL  bResults = FALSE;
 	HINTERNET hSession = NULL;
 	HINTERNET hConnect = NULL;
@@ -87,7 +179,7 @@ bool http(const std::wstring& verb, const std::wstring& user_agent, const std::w
 		// Send a request.
 		if (hRequest)
 		{
-			if (header.empty())
+			if (requestHeader.empty())
 			{
 				bResults = WinHttpSendRequest(hRequest,
 					WINHTTP_NO_ADDITIONAL_HEADERS, 0,
@@ -97,7 +189,7 @@ bool http(const std::wstring& verb, const std::wstring& user_agent, const std::w
 			else
 			{
 				bResults = WinHttpSendRequest(hRequest,
-					header.c_str(), header.size(),
+					requestHeader.c_str(), requestHeader.size(),
 					(LPVOID)input_data.data(), input_data.size(),
 					input_data.size(), 0);
 			}
@@ -137,6 +229,24 @@ bool http(const std::wstring& verb, const std::wstring& user_agent, const std::w
 			if (!bResults)
 			{
 				error = L"WinHttpQueryHeaders fails!";
+			}
+
+			// Get response header
+			WinHttpQueryHeaders(hRequest, WINHTTP_QUERY_RAW_HEADERS_CRLF,
+				WINHTTP_HEADER_NAME_BY_INDEX, NULL,
+				&dwSize, WINHTTP_NO_HEADER_INDEX);
+
+			// Allocate memory for the buffer.
+			if (GetLastError() == ERROR_INSUFFICIENT_BUFFER)
+			{
+				responseHeader.resize(dwSize + 1);
+
+				// Now, use WinHttpQueryHeaders to retrieve the header.
+				bResults = WinHttpQueryHeaders(hRequest,
+					WINHTTP_QUERY_RAW_HEADERS_CRLF,
+					WINHTTP_HEADER_NAME_BY_INDEX,
+					(LPVOID) responseHeader.data(), &dwSize,
+					WINHTTP_NO_HEADER_INDEX);
 			}
 
 		}
@@ -283,7 +393,7 @@ bool http(const std::wstring& verb, const std::wstring& user_agent, const std::w
 	return true;
 }
 
-DWORD ChooseAuthScheme(DWORD dwSupportedSchemes)
+DWORD WinHttpWrapper::ChooseAuthScheme(DWORD dwSupportedSchemes)
 {
 	//  It is the server's responsibility only to accept 
 	//  authentication schemes that provide a sufficient
