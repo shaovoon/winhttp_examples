@@ -11,13 +11,13 @@ namespace WinHttpWrapper
 		HttpResponse() : statusCode(0) {}
 		void Reset()
 		{
-			output = "";
+			text = "";
 			header = L"";
 			statusCode = 0;
 			error = L"";
 		}
 
-		std::string output;
+		std::string text;
 		std::wstring header;
 		DWORD statusCode;
 		std::wstring error;
@@ -50,15 +50,15 @@ namespace WinHttpWrapper
 			HttpResponse& response);
 		bool Post(const std::wstring& rest_of_path,
 			const std::wstring& requestHeader,
-			const std::string& input_data,
+			const std::string& body,
 			HttpResponse& response);
 		bool Put(const std::wstring& rest_of_path,
 			const std::wstring& requestHeader,
-			const std::string& input_data,
+			const std::string& body,
 			HttpResponse& response);
 		bool Delete(const std::wstring& rest_of_path,
 			const std::wstring& requestHeader,
-			const std::string& input_data,
+			const std::string& body,
 			HttpResponse& response);
 
 	private:
@@ -67,13 +67,13 @@ namespace WinHttpWrapper
 			const std::wstring& verb,
 			const std::wstring& rest_of_path,
 			const std::wstring& requestHeader,
-			const std::string& input_data,
+			const std::string& body,
 			HttpResponse& response);
 		static bool http(
 			const std::wstring& verb, const std::wstring& user_agent, const std::wstring& domain,
 			const std::wstring& rest_of_path, int port, bool secure,
-			const std::wstring& requestHeader, const std::string& input_data,
-			std::string& output, std::wstring& responseHeader,
+			const std::wstring& requestHeader, const std::string& body,
+			std::string& text, std::wstring& responseHeader,
 			DWORD& statusCode, std::wstring& error,
 			const std::wstring& szProxyUsername, const std::wstring& szProxyPassword,
 			const std::wstring& szServerUsername, const std::wstring& szServerPassword);

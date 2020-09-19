@@ -9,19 +9,19 @@ bool WinHttpWrapper::HttpRequest::Get(
 	HttpResponse& response)
 {
 	static const std::wstring verb = L"GET";
-	static std::string input_data;
+	static std::string body;
 	return Request(
 		verb,
 		rest_of_path,
 		requestHeader,
-		input_data,
+		body,
 		response);
 }
 
 bool WinHttpWrapper::HttpRequest::Post(
 	const std::wstring& rest_of_path,
 	const std::wstring& requestHeader,
-	const std::string& input_data,
+	const std::string& body,
 	HttpResponse& response)
 {
 	static const std::wstring verb = L"POST";
@@ -29,14 +29,14 @@ bool WinHttpWrapper::HttpRequest::Post(
 		verb,
 		rest_of_path,
 		requestHeader,
-		input_data,
+		body,
 		response);
 }
 
 bool WinHttpWrapper::HttpRequest::Put(
 	const std::wstring& rest_of_path,
 	const std::wstring& requestHeader,
-	const std::string& input_data,
+	const std::string& body,
 	HttpResponse& response)
 {
 	static const std::wstring verb = L"PUT";
@@ -44,14 +44,14 @@ bool WinHttpWrapper::HttpRequest::Put(
 		verb,
 		rest_of_path,
 		requestHeader,
-		input_data,
+		body,
 		response);
 }
 
 bool WinHttpWrapper::HttpRequest::Delete(
 	const std::wstring& rest_of_path,
 	const std::wstring& requestHeader,
-	const std::string& input_data,
+	const std::string& body,
 	HttpResponse& response)
 {
 	static const std::wstring verb = L"DELETE";
@@ -59,7 +59,7 @@ bool WinHttpWrapper::HttpRequest::Delete(
 		verb,
 		rest_of_path,
 		requestHeader,
-		input_data,
+		body,
 		response);
 }
 
@@ -67,13 +67,13 @@ bool WinHttpWrapper::HttpRequest::Request(
 	const std::wstring& verb,
 	const std::wstring& rest_of_path,
 	const std::wstring& requestHeader,
-	const std::string& input_data,
+	const std::string& body,
 	HttpResponse& response)
 {
 	return http(verb, m_UserAgent, m_Domain,
 		rest_of_path, m_Port, m_Secure,
-		requestHeader, input_data,
-		response.output, response.header,
+		requestHeader, body,
+		response.text, response.header,
 		response.statusCode, response.error,
 		m_ProxyUsername, m_ProxyPassword,
 		m_ServerUsername, m_ServerPassword);
@@ -82,8 +82,8 @@ bool WinHttpWrapper::HttpRequest::Request(
 
 bool WinHttpWrapper::HttpRequest::http(const std::wstring& verb, const std::wstring& user_agent, const std::wstring& domain,
 	const std::wstring& rest_of_path, int port, bool secure,
-	const std::wstring& requestHeader, const std::string& input_data,
-	std::string& output, std::wstring& responseHeader, DWORD& dwStatusCode, std::wstring& error,
+	const std::wstring& requestHeader, const std::string& body,
+	std::string& text, std::wstring& responseHeader, DWORD& dwStatusCode, std::wstring& error,
 	const std::wstring& szProxyUsername, const std::wstring& szProxyPassword,
 	const std::wstring& szServerUsername, const std::wstring& szServerPassword)
 {
@@ -167,15 +167,15 @@ bool WinHttpWrapper::HttpRequest::http(const std::wstring& verb, const std::wstr
 			{
 				bResults = WinHttpSendRequest(hRequest,
 					WINHTTP_NO_ADDITIONAL_HEADERS, 0,
-					(LPVOID)input_data.data(), input_data.size(),
-					input_data.size(), 0);
+					(LPVOID)body.data(), body.size(),
+					body.size(), 0);
 			}
 			else
 			{
 				bResults = WinHttpSendRequest(hRequest,
 					requestHeader.c_str(), requestHeader.size(),
-					(LPVOID)input_data.data(), input_data.size(),
-					input_data.size(), 0);
+					(LPVOID)body.data(), body.size(),
+					body.size(), 0);
 			}
 			if (!bResults)
 			{
@@ -243,7 +243,7 @@ bool WinHttpWrapper::HttpRequest::http(const std::wstring& verb, const std::wstr
 			case 200:
 			{
 				std::string temp;
-				output = "";
+				text = "";
 				do
 				{
 					// Check for available data.
@@ -268,7 +268,7 @@ bool WinHttpWrapper::HttpRequest::http(const std::wstring& verb, const std::wstr
 					}
 					else
 					{
-						output += temp;
+						text += temp;
 					}
 				} while (dwSize > 0);
 			}
