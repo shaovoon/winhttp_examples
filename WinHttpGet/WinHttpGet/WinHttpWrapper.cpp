@@ -6,9 +6,7 @@
 bool WinHttpWrapper::Get(
 	const std::wstring& rest_of_path,
 	const std::wstring& requestHeader,
-	std::string& output,
-	std::wstring& responseHeader,
-	std::wstring& pp_error)
+	HttpResponse& response)
 {
 	static const std::wstring verb = L"GET";
 	static std::string input_data;
@@ -17,18 +15,14 @@ bool WinHttpWrapper::Get(
 		rest_of_path,
 		requestHeader,
 		input_data,
-		output,
-		responseHeader,
-		pp_error);
+		response);
 }
 
 bool WinHttpWrapper::Post(
 	const std::wstring& rest_of_path,
 	const std::wstring& requestHeader,
 	const std::string& input_data,
-	std::string& output,
-	std::wstring& responseHeader,
-	std::wstring& pp_error)
+	HttpResponse& response)
 {
 	static const std::wstring verb = L"POST";
 	return Request(
@@ -36,18 +30,14 @@ bool WinHttpWrapper::Post(
 		rest_of_path,
 		requestHeader,
 		input_data,
-		output,
-		responseHeader,
-		pp_error);
+		response);
 }
 
 bool WinHttpWrapper::Put(
 	const std::wstring& rest_of_path,
 	const std::wstring& requestHeader,
 	const std::string& input_data,
-	std::string& output,
-	std::wstring& responseHeader,
-	std::wstring& pp_error)
+	HttpResponse& response)
 {
 	static const std::wstring verb = L"PUT";
 	return Request(
@@ -55,18 +45,14 @@ bool WinHttpWrapper::Put(
 		rest_of_path,
 		requestHeader,
 		input_data,
-		output,
-		responseHeader,
-		pp_error);
+		response);
 }
 
 bool WinHttpWrapper::Delete(
 	const std::wstring& rest_of_path,
 	const std::wstring& requestHeader,
 	const std::string& input_data,
-	std::string& output,
-	std::wstring& responseHeader,
-	std::wstring& pp_error)
+	HttpResponse& response)
 {
 	static const std::wstring verb = L"DELETE";
 	return Request(
@@ -74,9 +60,7 @@ bool WinHttpWrapper::Delete(
 		rest_of_path,
 		requestHeader,
 		input_data,
-		output,
-		responseHeader,
-		pp_error);
+		response);
 }
 
 bool WinHttpWrapper::Request(
@@ -84,14 +68,13 @@ bool WinHttpWrapper::Request(
 	const std::wstring& rest_of_path,
 	const std::wstring& requestHeader,
 	const std::string& input_data,
-	std::string& output,
-	std::wstring& responseHeader,
-	std::wstring& pp_error)
+	HttpResponse& response)
 {
 	return http(verb, m_UserAgent, m_Domain,
 		rest_of_path, m_Port, m_Secure,
 		requestHeader, input_data,
-		output, responseHeader, pp_error, 
+		response.output, response.header,
+		response.statusCode, response.error,
 		m_ProxyUsername, m_ProxyPassword,
 		m_ServerUsername, m_ServerPassword);
 }
@@ -100,11 +83,10 @@ bool WinHttpWrapper::Request(
 bool WinHttpWrapper::http(const std::wstring& verb, const std::wstring& user_agent, const std::wstring& domain,
 	const std::wstring& rest_of_path, int port, bool secure,
 	const std::wstring& requestHeader, const std::string& input_data,
-	std::string& output, std::wstring& responseHeader, std::wstring& error,
+	std::string& output, std::wstring& responseHeader, DWORD& dwStatusCode, std::wstring& error,
 	const std::wstring& szProxyUsername, const std::wstring& szProxyPassword,
 	const std::wstring& szServerUsername, const std::wstring& szServerPassword)
 {
-	DWORD dwStatusCode = 0;
 	DWORD dwSupportedSchemes;
 	DWORD dwFirstScheme;
 	DWORD dwSelectedScheme;
@@ -118,6 +100,8 @@ bool WinHttpWrapper::http(const std::wstring& verb, const std::wstring& user_age
 	HINTERNET hRequest = NULL;
 	BOOL bDone = FALSE;
 	DWORD dwProxyAuthScheme = 0;
+
+	dwStatusCode = 0;
 
 	// Use WinHttpOpen to obtain a session handle.
 	hSession = WinHttpOpen(user_agent.c_str(),

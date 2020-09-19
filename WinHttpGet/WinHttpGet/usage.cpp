@@ -10,21 +10,22 @@ int main()
 	std::wstring rest_of_path = L"/Default?SearchTerm=Hello";
 	int port = 54170;
 	std::string output;
-	std::wstring responseHeader;
-	std::wstring error;
-	std::wstring header;
+	std::wstring requestHeader;
+	HttpResponse response;
 
 	WinHttpWrapper wrapper(domain, port, false);
 	bool success = wrapper.Get(
-		rest_of_path, header,
-		output, responseHeader, error);
+		rest_of_path, requestHeader,
+		response);
 	if (success)
 	{
-		std::cout << "Output:" << output << std::endl;
-		std::wcout << L"ResponseHeader:" << responseHeader << std::endl;
+		std::cout << "StatusCode:" << response.statusCode << std::endl;
+		std::cout << "Output:" << response.output << std::endl;
+		std::wcout << L"ResponseHeader:" << response.header << std::endl;
 	}
 	else
 	{
-		std::wcout << "Error:" << error << std::endl;
+		std::cout << "StatusCode:" << response.statusCode << std::endl;
+		std::wcout << "Error:" << response.error << std::endl;
 	}
 }

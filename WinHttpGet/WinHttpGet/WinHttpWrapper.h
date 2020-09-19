@@ -4,6 +4,14 @@
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 
+struct HttpResponse
+{
+	HttpResponse() : statusCode(0) {}
+	std::string output;
+	std::wstring header;
+	DWORD statusCode;
+	std::wstring error;
+};
 
 class WinHttpWrapper
 {
@@ -29,27 +37,19 @@ public:
 
 	bool Get(const std::wstring& rest_of_path,
 		const std::wstring& requestHeader,
-		std::string& output,
-		std::wstring& responseHeader,
-		std::wstring& pp_error);
+		HttpResponse& response);
 	bool Post(const std::wstring& rest_of_path,
 		const std::wstring& requestHeader,
 		const std::string& input_data,
-		std::string& output,
-		std::wstring& responseHeader,
-		std::wstring& pp_error);
+		HttpResponse& response);
 	bool Put(const std::wstring& rest_of_path,
 		const std::wstring& requestHeader,
 		const std::string& input_data,
-		std::string& output,
-		std::wstring& responseHeader,
-		std::wstring& pp_error);
+		HttpResponse& response);
 	bool Delete(const std::wstring& rest_of_path,
 		const std::wstring& requestHeader,
 		const std::string& input_data,
-		std::string& output,
-		std::wstring& responseHeader,
-		std::wstring& pp_error);
+		HttpResponse& response);
 
 private:
 	// Request is wrapper around http()
@@ -58,14 +58,13 @@ private:
 		const std::wstring& rest_of_path,
 		const std::wstring& requestHeader,
 		const std::string& input_data,
-		std::string& output,
-		std::wstring& responseHeader,
-		std::wstring& pp_error);
+		HttpResponse& response);
 	static bool http(
 		const std::wstring& verb, const std::wstring& user_agent, const std::wstring& domain,
 		const std::wstring& rest_of_path, int port, bool secure,
 		const std::wstring& requestHeader, const std::string& input_data,
-		std::string& output, std::wstring& responseHeader, std::wstring& pp_error,
+		std::string& output, std::wstring& responseHeader, 
+		DWORD& statusCode, std::wstring& error,
 		const std::wstring& szProxyUsername, const std::wstring& szProxyPassword,
 		const std::wstring& szServerUsername, const std::wstring& szServerPassword);
 
