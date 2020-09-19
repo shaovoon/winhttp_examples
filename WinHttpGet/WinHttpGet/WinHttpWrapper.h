@@ -4,83 +4,90 @@
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 
-struct HttpResponse
+namespace WinHttpWrapper
 {
-	HttpResponse() : statusCode(0) {}
-	std::string output;
-	std::wstring header;
-	DWORD statusCode;
-	std::wstring error;
-};
+	struct HttpResponse
+	{
+		HttpResponse() : statusCode(0) {}
+		void Reset()
+		{
+			output = "";
+			header = L"";
+			statusCode = 0;
+			error = L"";
+		}
 
-class WinHttpWrapper
-{
-public:
-	WinHttpWrapper(
-		const std::wstring& domain,
-		int port, 
-		bool secure,
-		const std::wstring& user_agent = L"WinHttpClient",
-		const std::wstring& proxy_username = L"", 
-		const std::wstring& proxy_password = L"", 
-		const std::wstring& server_username = L"", 
-		const std::wstring& server_password = L"")
-		: m_Domain(domain)
-		, m_Port(port)
-		, m_Secure(secure)
-		, m_UserAgent(user_agent)
-		, m_ProxyUsername(proxy_username)
-		, m_ProxyPassword(proxy_password)
-		, m_ServerUsername(server_username)
-		, m_ServerPassword(server_password)
-	{}
+		std::string output;
+		std::wstring header;
+		DWORD statusCode;
+		std::wstring error;
+	};
 
-	bool Get(const std::wstring& rest_of_path,
-		const std::wstring& requestHeader,
-		HttpResponse& response);
-	bool Post(const std::wstring& rest_of_path,
-		const std::wstring& requestHeader,
-		const std::string& input_data,
-		HttpResponse& response);
-	bool Put(const std::wstring& rest_of_path,
-		const std::wstring& requestHeader,
-		const std::string& input_data,
-		HttpResponse& response);
-	bool Delete(const std::wstring& rest_of_path,
-		const std::wstring& requestHeader,
-		const std::string& input_data,
-		HttpResponse& response);
+	class HttpRequest
+	{
+	public:
+		HttpRequest(
+			const std::wstring& domain,
+			int port,
+			bool secure,
+			const std::wstring& user_agent = L"WinHttpClient",
+			const std::wstring& proxy_username = L"",
+			const std::wstring& proxy_password = L"",
+			const std::wstring& server_username = L"",
+			const std::wstring& server_password = L"")
+			: m_Domain(domain)
+			, m_Port(port)
+			, m_Secure(secure)
+			, m_UserAgent(user_agent)
+			, m_ProxyUsername(proxy_username)
+			, m_ProxyPassword(proxy_password)
+			, m_ServerUsername(server_username)
+			, m_ServerPassword(server_password)
+		{}
 
-private:
-	// Request is wrapper around http()
-	bool Request(
-		const std::wstring& verb,
-		const std::wstring& rest_of_path,
-		const std::wstring& requestHeader,
-		const std::string& input_data,
-		HttpResponse& response);
-	static bool http(
-		const std::wstring& verb, const std::wstring& user_agent, const std::wstring& domain,
-		const std::wstring& rest_of_path, int port, bool secure,
-		const std::wstring& requestHeader, const std::string& input_data,
-		std::string& output, std::wstring& responseHeader, 
-		DWORD& statusCode, std::wstring& error,
-		const std::wstring& szProxyUsername, const std::wstring& szProxyPassword,
-		const std::wstring& szServerUsername, const std::wstring& szServerPassword);
+		bool Get(const std::wstring& rest_of_path,
+			const std::wstring& requestHeader,
+			HttpResponse& response);
+		bool Post(const std::wstring& rest_of_path,
+			const std::wstring& requestHeader,
+			const std::string& input_data,
+			HttpResponse& response);
+		bool Put(const std::wstring& rest_of_path,
+			const std::wstring& requestHeader,
+			const std::string& input_data,
+			HttpResponse& response);
+		bool Delete(const std::wstring& rest_of_path,
+			const std::wstring& requestHeader,
+			const std::string& input_data,
+			HttpResponse& response);
 
-	static DWORD ChooseAuthScheme(DWORD dwSupportedSchemes);
+	private:
+		// Request is wrapper around http()
+		bool Request(
+			const std::wstring& verb,
+			const std::wstring& rest_of_path,
+			const std::wstring& requestHeader,
+			const std::string& input_data,
+			HttpResponse& response);
+		static bool http(
+			const std::wstring& verb, const std::wstring& user_agent, const std::wstring& domain,
+			const std::wstring& rest_of_path, int port, bool secure,
+			const std::wstring& requestHeader, const std::string& input_data,
+			std::string& output, std::wstring& responseHeader,
+			DWORD& statusCode, std::wstring& error,
+			const std::wstring& szProxyUsername, const std::wstring& szProxyPassword,
+			const std::wstring& szServerUsername, const std::wstring& szServerPassword);
 
-	std::wstring m_Domain;
-	int m_Port;
-	bool m_Secure;
-	std::wstring m_UserAgent;
-	std::wstring m_ProxyUsername;
-	std::wstring m_ProxyPassword;
-	std::wstring m_ServerUsername;
-	std::wstring m_ServerPassword;
+		static DWORD ChooseAuthScheme(DWORD dwSupportedSchemes);
 
+		std::wstring m_Domain;
+		int m_Port;
+		bool m_Secure;
+		std::wstring m_UserAgent;
+		std::wstring m_ProxyUsername;
+		std::wstring m_ProxyPassword;
+		std::wstring m_ServerUsername;
+		std::wstring m_ServerPassword;
+	};
 
-
-
-};
-
+}

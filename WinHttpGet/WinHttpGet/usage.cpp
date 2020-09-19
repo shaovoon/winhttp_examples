@@ -11,10 +11,12 @@ int main()
 	int port = 54170;
 	std::string output;
 	std::wstring requestHeader;
+
+	using namespace WinHttpWrapper;
 	HttpResponse response;
 
-	WinHttpWrapper wrapper(domain, port, false);
-	bool success = wrapper.Get(
+	HttpRequest req(domain, port, false);
+	bool success = req.Get(
 		rest_of_path, requestHeader,
 		response);
 	if (success)

@@ -3,7 +3,7 @@
 #pragma comment(lib, "Winhttp.lib")
 
 
-bool WinHttpWrapper::Get(
+bool WinHttpWrapper::HttpRequest::Get(
 	const std::wstring& rest_of_path,
 	const std::wstring& requestHeader,
 	HttpResponse& response)
@@ -18,7 +18,7 @@ bool WinHttpWrapper::Get(
 		response);
 }
 
-bool WinHttpWrapper::Post(
+bool WinHttpWrapper::HttpRequest::Post(
 	const std::wstring& rest_of_path,
 	const std::wstring& requestHeader,
 	const std::string& input_data,
@@ -33,7 +33,7 @@ bool WinHttpWrapper::Post(
 		response);
 }
 
-bool WinHttpWrapper::Put(
+bool WinHttpWrapper::HttpRequest::Put(
 	const std::wstring& rest_of_path,
 	const std::wstring& requestHeader,
 	const std::string& input_data,
@@ -48,7 +48,7 @@ bool WinHttpWrapper::Put(
 		response);
 }
 
-bool WinHttpWrapper::Delete(
+bool WinHttpWrapper::HttpRequest::Delete(
 	const std::wstring& rest_of_path,
 	const std::wstring& requestHeader,
 	const std::string& input_data,
@@ -63,7 +63,7 @@ bool WinHttpWrapper::Delete(
 		response);
 }
 
-bool WinHttpWrapper::Request(
+bool WinHttpWrapper::HttpRequest::Request(
 	const std::wstring& verb,
 	const std::wstring& rest_of_path,
 	const std::wstring& requestHeader,
@@ -80,7 +80,7 @@ bool WinHttpWrapper::Request(
 }
 
 
-bool WinHttpWrapper::http(const std::wstring& verb, const std::wstring& user_agent, const std::wstring& domain,
+bool WinHttpWrapper::HttpRequest::http(const std::wstring& verb, const std::wstring& user_agent, const std::wstring& domain,
 	const std::wstring& rest_of_path, int port, bool secure,
 	const std::wstring& requestHeader, const std::string& input_data,
 	std::string& output, std::wstring& responseHeader, DWORD& dwStatusCode, std::wstring& error,
@@ -377,7 +377,7 @@ bool WinHttpWrapper::http(const std::wstring& verb, const std::wstring& user_age
 	return true;
 }
 
-DWORD WinHttpWrapper::ChooseAuthScheme(DWORD dwSupportedSchemes)
+DWORD WinHttpWrapper::HttpRequest::ChooseAuthScheme(DWORD dwSupportedSchemes)
 {
 	//  It is the server's responsibility only to accept 
 	//  authentication schemes that provide a sufficient
