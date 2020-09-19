@@ -152,10 +152,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="usage.cpp" />
-    <ClCompile Include="WinHttpGet.cpp" />
+    <ClCompile Include="WinHttpWrapper.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="WinHttpGet.h" />
+    <ClInclude Include="WinHttpWrapper.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

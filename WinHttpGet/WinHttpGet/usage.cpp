@@ -2,34 +2,56 @@
 //
 
 #include <iostream>
-#include "WinHttpGet.h"
+#include "WinHttpWrapper.h"
 
 int main()
 {
-	std::wstring verb = L"GET";
-	std::wstring user_agent = L"WinHttp";
 	std::wstring domain = L"localhost";
-	std::wstring rest_of_path = L"/Default?SearchTerm=Hello";
-	std::wstring proxy_username;
-	std::wstring proxy_password;
-	std::wstring server_username;
-	std::wstring server_password;
-	int port = 54170;
-	std::string output = "";
-	std::wstring error;
-	std::wstring header;
-	std::string input_data;
-	bool success = http(verb,
-		user_agent, domain, rest_of_path, 
-		port, false, output, error, header, input_data,
-		proxy_username, proxy_password,
-		server_username, server_password);
-	if (success)
+	int port = 51654;
+	std::string text;
+	std::wstring requestHeader;
+
+	using namespace WinHttpWrapper;
+	HttpResponse response;
+
+	HttpRequest req(domain, port, false);
+
 	{
-		std::cout << "Output:" << output << std::endl;
+		std::cout << "Action: Create Product with Id = 1" << std::endl;
+		req.Post(L"/api/products/create", L"Content-Type: application/json", R"({"Id":1, "Name":"ElectricFan","Qty":14,"Price":20.90})", response);
+		std::cout << "Returned Status:" << response.statusCode << std::endl;
 	}
-	else
+	response.Reset();
 	{
-		std::wcout << "Error:" << error << std::endl;
+		std::cout << "Action: Retrieve the product with id = 1" << std::endl;
+		req.Get(L"/api/products/1", L"", response);
+		std::cout << "Returned Text:" << response.text << std::endl;
 	}
+	response.Reset();
+	{
+		std::cout << "Action: Update Product with Id = 1" << std::endl;
+		req.Post(L"/api/products/1", L"Content-Type: application/json", R"({"Id":1, "Name":"ElectricFan","Qty":15,"Price":29.80})", response);
+		std::cout << "Returned Status:" << response.statusCode << std::endl;
+	}
+	response.Reset();
+	{
+		std::cout << "Action: Retrieve all products" << std::endl;
+		req.Get(L"/api/products", L"", response);
+		std::cout << "Returned Text:" << response.text << std::endl;
+	}
+	response.Reset();
+	{
+		std::cout << "Action: Delete the product with id = 1" << std::endl;
+		req.Delete(L"/api/products/1", L"", "", response);
+		std::cout << "Returned Status:" << response.statusCode << std::endl;
+	}
+	response.Reset();
+	{
+		std::cout << "Action: Retrieve all products" << std::endl;
+		req.Get(L"/api/products", L"", response);
+		std::cout << "Returned Text:" << response.text << std::endl;
+	}
+	response.Reset();
+
+	return 0;
 }
