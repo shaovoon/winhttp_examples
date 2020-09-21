@@ -1,3 +1,10 @@
+// The MIT License (MIT)
+// WinHTTP Wrapper 1.0
+// Copyright (C) 2020, by Wong Shao Voon (shaovoon@yahoo.com)
+//
+// http://opensource.org/licenses/MIT
+
+
 #pragma once
 
 #include <string>
