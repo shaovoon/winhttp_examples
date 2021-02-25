@@ -368,17 +368,14 @@ bool WinHttpWrapper::HttpRequest::http(const std::wstring& verb, const std::wstr
 			bDone = TRUE;
 	}
 
-
-	// Report any errors.
-	if (!bResults)
-	{
-		return false;
-	}
-
 	// Close any open handles.
 	if (hRequest) WinHttpCloseHandle(hRequest);
 	if (hConnect) WinHttpCloseHandle(hConnect);
 	if (hSession) WinHttpCloseHandle(hSession);
+
+	// Report any errors.
+	if (!bResults)
+		return false;
 
 	return true;
 }
