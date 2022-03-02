@@ -246,7 +246,7 @@ bool WinHttpWrapper::HttpRequest::http(const std::wstring& verb, const std::wstr
 		{
 			switch (dwStatusCode)
 			{
-			case 200:
+			default:
 			{
 				std::string temp;
 				text = "";
@@ -351,12 +351,6 @@ bool WinHttpWrapper::HttpRequest::http(const std::wstring& verb, const std::wstr
 				if (dwLastStatus == 407)
 					bDone = TRUE;
 				break;
-
-			default:
-				// The status code does not indicate success.
-				error = L"Error. Status code returned:";
-				error += std::to_wstring(dwStatusCode);
-				bDone = TRUE;
 			}
 		}
 
