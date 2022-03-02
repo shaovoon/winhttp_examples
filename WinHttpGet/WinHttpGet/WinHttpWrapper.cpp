@@ -244,42 +244,42 @@ bool WinHttpWrapper::HttpRequest::http(const std::wstring& verb, const std::wstr
 		// Keep checking for data until there is nothing left.
 		if (bResults)
 		{
+			std::string temp;
+			text = "";
+			do
+			{
+				// Check for available data.
+				dwSize = 0;
+				if (!WinHttpQueryDataAvailable(hRequest, &dwSize))
+					error = L"Error in WinHttpQueryDataAvailable: ";
+				error += std::to_wstring(GetLastError());
+
+				if (dwSize == 0)
+					break;
+
+				// Allocate space for the buffer.
+				temp = "";
+				temp.resize(dwSize);
+				// Read the data.
+				ZeroMemory((void*)(&temp[0]), dwSize);
+				if (!WinHttpReadData(hRequest, (LPVOID)(&temp[0]),
+					dwSize, &dwDownloaded))
+				{
+					error = L"Error in WinHttpReadData: ";
+					error += std::to_wstring(GetLastError());
+				}
+				else
+				{
+					text += temp;
+				}
+			} 
+			while (dwSize > 0);
+
 			switch (dwStatusCode)
 			{
 			default:
-			{
-				std::string temp;
-				text = "";
-				do
-				{
-					// Check for available data.
-					dwSize = 0;
-					if (!WinHttpQueryDataAvailable(hRequest, &dwSize))
-						error = L"Error in WinHttpQueryDataAvailable: ";
-						error += std::to_wstring(GetLastError());
-
-					if (dwSize == 0)
-						break;
-
-					// Allocate space for the buffer.
-					temp = "";
-					temp.resize(dwSize);
-					// Read the data.
-					ZeroMemory((void*)(&temp[0]), dwSize);
-					if (!WinHttpReadData(hRequest, (LPVOID)(&temp[0]),
-						dwSize, &dwDownloaded))
-					{
-						error = L"Error in WinHttpReadData: ";
-						error += std::to_wstring(GetLastError());
-					}
-					else
-					{
-						text += temp;
-					}
-				} while (dwSize > 0);
-			}
-			bDone = TRUE;
-			break;
+				bDone = TRUE;
+				break;
 			case 401:
 				// The server requires authentication.
 				//printf(" The server requires authentication. Sending credentials...\n");
