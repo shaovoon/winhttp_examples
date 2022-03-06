@@ -1,9 +1,10 @@
 // The MIT License (MIT)
-// WinHTTP Wrapper 1.0
-// Copyright (C) 2020, by Wong Shao Voon (shaovoon@yahoo.com)
+// WinHTTP Wrapper 1.0.3
+// Copyright (C) 2020 - 2022, by Wong Shao Voon (shaovoon@yahoo.com)
 //
 // http://opensource.org/licenses/MIT
 
+// version 1.0.3: Set the text regardless the http status, not just for HTTP OK 200
 
 #pragma once
 
