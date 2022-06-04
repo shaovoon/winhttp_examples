@@ -5,6 +5,7 @@
 // http://opensource.org/licenses/MIT
 
 // version 1.0.3: Set the text regardless the http status, not just for HTTP OK 200
+// version 1.0.4: Add hGetHeaderDictionary() and contentLength to HttpResponse class
 
 #include "WinHttpWrapper.h"
 #include <winhttp.h>
@@ -82,7 +83,9 @@ bool WinHttpWrapper::HttpRequest::Request(
 		rest_of_path, m_Port, m_Secure,
 		requestHeader, body,
 		response.text, response.header,
-		response.statusCode, response.error,
+		response.statusCode, 
+		response.contentLength,
+		response.error,
 		m_ProxyUsername, m_ProxyPassword,
 		m_ServerUsername, m_ServerPassword);
 }
@@ -91,7 +94,7 @@ bool WinHttpWrapper::HttpRequest::Request(
 bool WinHttpWrapper::HttpRequest::http(const std::wstring& verb, const std::wstring& user_agent, const std::wstring& domain,
 	const std::wstring& rest_of_path, int port, bool secure,
 	const std::wstring& requestHeader, const std::string& body,
-	std::string& text, std::wstring& responseHeader, DWORD& dwStatusCode, std::wstring& error,
+	std::string& text, std::wstring& responseHeader, DWORD& dwStatusCode, DWORD& dwContent, std::wstring& error,
 	const std::wstring& szProxyUsername, const std::wstring& szProxyPassword,
 	const std::wstring& szServerUsername, const std::wstring& szServerPassword)
 {
@@ -256,6 +259,7 @@ bool WinHttpWrapper::HttpRequest::http(const std::wstring& verb, const std::wstr
 					error = L"Error in WinHttpQueryDataAvailable: ";
 				error += std::to_wstring(GetLastError());
 
+				dwContent += dwSize;
 				if (dwSize == 0)
 					break;
 
@@ -464,27 +468,4 @@ std::unordered_map<std::wstring, std::wstring>& WinHttpWrapper::HttpResponse::Ge
 		dict[key] = value;
 
 	return dict;
-}
-
-int WinHttpWrapper::HttpResponse::ContentLength()
-{
-	if (contentLength > -1)
-		return contentLength;
-
-	std::unordered_map<std::wstring, std::wstring>& dic = GetHeaderDictionary();
-
-	std::wstring length = dic[L"Content-Length"];
-
-	if (!length.empty())
-	{
-		try
-		{
-			contentLength = std::stoi(length);
-		}
-		catch (const std::exception&)
-		{
-			contentLength = -1;
-		}
-	}
-	return contentLength;
 }

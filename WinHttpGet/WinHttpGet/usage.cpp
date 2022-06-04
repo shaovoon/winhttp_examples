@@ -21,16 +21,16 @@ int main()
 		requestHeader,
 		R"({"Id":1, "Name":"ElectricFan","Qty":14,"Price":20.90})", 
 		response);
-	cout << "Content Length:" << response.ContentLength() << endl;
-	cout << "Returned Status:" << response.statusCode << endl << endl;
+	cout << "Returned Status:" << response.statusCode << endl;
+	cout << "Content Length:" << response.contentLength << endl << endl;
 	//PrintDictionary(response.GetHeaderDictionary());
 	//wcout << endl << response.header << endl;
 	response.Reset();
 
 	cout << "Action: Retrieve the product with id = 1" << endl;
 	req.Get(L"/api/products/1", L"", response);
-	cout << "Content Length:" << response.ContentLength() << endl;
-	cout << "Returned Text:" << response.text << endl << endl;
+	cout << "Returned Text:" << response.text << endl;
+	cout << "Content Length:" << response.contentLength << endl << endl;
 	response.Reset();
 
 	cout << "Action: Update Product with Id = 1" << endl;
@@ -38,26 +38,26 @@ int main()
 		requestHeader,
 		R"({"Id":1, "Name":"ElectricFan","Qty":15,"Price":29.80})", 
 		response);
-	cout << "Content Length:" << response.ContentLength() << endl;
-	cout << "Returned Status:" << response.statusCode << endl << endl;
+	cout << "Returned Status:" << response.statusCode << endl;
+	cout << "Content Length:" << response.contentLength << endl << endl;
 	response.Reset();
 
 	cout << "Action: Retrieve all products" << endl;
 	req.Get(L"/api/products", L"", response);
-	cout << "Content Length:" << response.ContentLength() << endl;
-	cout << "Returned Text:" << response.text << endl << endl;
+	cout << "Returned Text:" << response.text << endl;
+	cout << "Content Length:" << response.contentLength << endl << endl;
 	response.Reset();
 
 	cout << "Action: Delete the product with id = 1" << endl;
 	req.Delete(L"/api/products/1", L"", "", response);
-	cout << "Content Length:" << response.ContentLength() << endl;
-	cout << "Returned Status:" << response.statusCode << endl << endl;
+	cout << "Returned Status:" << response.statusCode << endl;
+	cout << "Content Length:" << response.contentLength << endl << endl;
 	response.Reset();
 
 	cout << "Action: Retrieve all products" << endl;
 	req.Get(L"/api/products", L"", response);
-	cout << "Content Length:" << response.ContentLength() << endl;
-	cout << "Returned Text:" << response.text << endl << endl;
+	cout << "Returned Text:" << response.text << endl;
+	cout << "Content Length:" << response.contentLength << endl << endl;
 	response.Reset();
 
 	return 0;

@@ -5,7 +5,7 @@
 // http://opensource.org/licenses/MIT
 
 // version 1.0.3: Set the text regardless the http status, not just for HTTP OK 200
-// version 1.0.4: Add header dictionary
+// version 1.0.4: Add hGetHeaderDictionary() and contentLength to HttpResponse class
 
 #pragma once
 
@@ -18,8 +18,7 @@ namespace WinHttpWrapper
 {
 	struct HttpResponse
 	{
-		HttpResponse() : statusCode(0), contentLength(-1) {}
-		int ContentLength();
+		HttpResponse() : statusCode(0), contentLength(0) {}
 		void Reset()
 		{
 			text = "";
@@ -27,17 +26,17 @@ namespace WinHttpWrapper
 			statusCode = 0;
 			error = L"";
 			dict.clear();
-			contentLength = -1;
+			contentLength = 0;
 		}
 		std::unordered_map<std::wstring, std::wstring>& GetHeaderDictionary();
 
 		std::string text;
 		std::wstring header;
 		DWORD statusCode;
+		DWORD contentLength;
 		std::wstring error;
 	private:
 		std::unordered_map<std::wstring, std::wstring> dict;
-		int contentLength;
 	};
 
 	class HttpRequest
@@ -91,7 +90,7 @@ namespace WinHttpWrapper
 			const std::wstring& rest_of_path, int port, bool secure,
 			const std::wstring& requestHeader, const std::string& body,
 			std::string& text, std::wstring& responseHeader,
-			DWORD& statusCode, std::wstring& error,
+			DWORD& statusCode, DWORD& dwContent, std::wstring& error,
 			const std::wstring& szProxyUsername, const std::wstring& szProxyPassword,
 			const std::wstring& szServerUsername, const std::wstring& szServerPassword);
 
