@@ -1,6 +1,8 @@
 #include <iostream>
 #include "WinHttpWrapper.h"
 
+void PrintDictionary(const std::unordered_map<std::wstring, std::wstring>& dict);
+
 int main()
 {
 	using namespace std;
@@ -20,6 +22,8 @@ int main()
 		R"({"Id":1, "Name":"ElectricFan","Qty":14,"Price":20.90})", 
 		response);
 	cout << "Returned Status:" << response.statusCode << endl << endl;
+	//PrintDictionary(response.GetHeaderDictionary());
+	//wcout << endl << response.header << endl;
 	response.Reset();
 
 	cout << "Action: Retrieve the product with id = 1" << endl;
@@ -51,4 +55,14 @@ int main()
 	response.Reset();
 
 	return 0;
+}
+
+void PrintDictionary(const std::unordered_map<std::wstring, std::wstring>& dict)
+{
+	using namespace std;
+	cout << "PrintDictionary" << endl;
+	for (auto pr : dict)
+	{
+		wcout << pr.first << L":" << pr.second << endl;
+	}
 }

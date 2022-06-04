@@ -402,3 +402,66 @@ DWORD WinHttpWrapper::HttpRequest::ChooseAuthScheme(DWORD dwSupportedSchemes)
 	else
 		return 0;
 }
+
+std::unordered_map<std::wstring, std::wstring>& WinHttpWrapper::HttpResponse::GetHeaderDictionary()
+{
+	if (!dict.empty())
+		return dict;
+
+	bool return_carriage_reached = false;
+	bool colon_reached = false;
+	bool colon_just_reached = false;
+	std::wstring key;
+	std::wstring value;
+	for (size_t i = 0; i < header.size(); ++i)
+	{
+		wchar_t ch = header[i];
+		if (ch == L':')
+		{
+			colon_reached = true;
+			colon_just_reached = true;
+			continue;
+		}
+		else if (ch == L'\r')
+			return_carriage_reached = true;
+		else if (ch == L'\n' && !return_carriage_reached)
+			return_carriage_reached = true;
+		else if (ch == L'\n' && return_carriage_reached)
+		{
+			return_carriage_reached = false;
+			continue;
+		}
+
+		if (return_carriage_reached)
+		{
+			if (!key.empty() && !value.empty())
+				dict[key] = value;
+
+			key.clear();
+			value.clear();
+			colon_reached = false;
+			if (ch == L'\n')
+				return_carriage_reached = false;
+
+			continue;
+		}
+
+		if (colon_reached == false)
+			key += ch;
+		else
+		{
+			if (colon_just_reached)
+			{
+				colon_just_reached = false;
+				if (ch == L' ')
+					continue;
+			}
+			value += ch;
+		}
+	}
+
+	if (!key.empty() && !value.empty())
+		dict[key] = value;
+
+	return dict;
+}

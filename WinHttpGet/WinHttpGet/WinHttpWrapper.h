@@ -5,12 +5,14 @@
 // http://opensource.org/licenses/MIT
 
 // version 1.0.3: Set the text regardless the http status, not just for HTTP OK 200
+// version 1.0.4: Add header dictionary
 
 #pragma once
 
 #include <string>
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
+#include <unordered_map>
 
 namespace WinHttpWrapper
 {
@@ -23,12 +25,16 @@ namespace WinHttpWrapper
 			header = L"";
 			statusCode = 0;
 			error = L"";
+			dict.clear();
 		}
+		std::unordered_map<std::wstring, std::wstring>& GetHeaderDictionary();
 
 		std::string text;
 		std::wstring header;
 		DWORD statusCode;
 		std::wstring error;
+	private:
+		std::unordered_map<std::wstring, std::wstring> dict;
 	};
 
 	class HttpRequest
