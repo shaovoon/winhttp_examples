@@ -21,6 +21,7 @@ int main()
 		requestHeader,
 		R"({"Id":1, "Name":"ElectricFan","Qty":14,"Price":20.90})", 
 		response);
+	cout << "Content Length:" << response.ContentLength() << endl;
 	cout << "Returned Status:" << response.statusCode << endl << endl;
 	//PrintDictionary(response.GetHeaderDictionary());
 	//wcout << endl << response.header << endl;
@@ -28,6 +29,7 @@ int main()
 
 	cout << "Action: Retrieve the product with id = 1" << endl;
 	req.Get(L"/api/products/1", L"", response);
+	cout << "Content Length:" << response.ContentLength() << endl;
 	cout << "Returned Text:" << response.text << endl << endl;
 	response.Reset();
 
@@ -36,21 +38,25 @@ int main()
 		requestHeader,
 		R"({"Id":1, "Name":"ElectricFan","Qty":15,"Price":29.80})", 
 		response);
+	cout << "Content Length:" << response.ContentLength() << endl;
 	cout << "Returned Status:" << response.statusCode << endl << endl;
 	response.Reset();
 
 	cout << "Action: Retrieve all products" << endl;
 	req.Get(L"/api/products", L"", response);
+	cout << "Content Length:" << response.ContentLength() << endl;
 	cout << "Returned Text:" << response.text << endl << endl;
 	response.Reset();
 
 	cout << "Action: Delete the product with id = 1" << endl;
 	req.Delete(L"/api/products/1", L"", "", response);
+	cout << "Content Length:" << response.ContentLength() << endl;
 	cout << "Returned Status:" << response.statusCode << endl << endl;
 	response.Reset();
 
 	cout << "Action: Retrieve all products" << endl;
 	req.Get(L"/api/products", L"", response);
+	cout << "Content Length:" << response.ContentLength() << endl;
 	cout << "Returned Text:" << response.text << endl << endl;
 	response.Reset();
 

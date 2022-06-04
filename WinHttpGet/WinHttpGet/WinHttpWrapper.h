@@ -18,7 +18,8 @@ namespace WinHttpWrapper
 {
 	struct HttpResponse
 	{
-		HttpResponse() : statusCode(0) {}
+		HttpResponse() : statusCode(0), contentLength(-1) {}
+		int ContentLength();
 		void Reset()
 		{
 			text = "";
@@ -26,6 +27,7 @@ namespace WinHttpWrapper
 			statusCode = 0;
 			error = L"";
 			dict.clear();
+			contentLength = -1;
 		}
 		std::unordered_map<std::wstring, std::wstring>& GetHeaderDictionary();
 
@@ -35,6 +37,7 @@ namespace WinHttpWrapper
 		std::wstring error;
 	private:
 		std::unordered_map<std::wstring, std::wstring> dict;
+		int contentLength;
 	};
 
 	class HttpRequest

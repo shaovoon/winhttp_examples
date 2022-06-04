@@ -465,3 +465,26 @@ std::unordered_map<std::wstring, std::wstring>& WinHttpWrapper::HttpResponse::Ge
 
 	return dict;
 }
+
+int WinHttpWrapper::HttpResponse::ContentLength()
+{
+	if (contentLength > -1)
+		return contentLength;
+
+	std::unordered_map<std::wstring, std::wstring>& dic = GetHeaderDictionary();
+
+	std::wstring length = dic[L"Content-Length"];
+
+	if (!length.empty())
+	{
+		try
+		{
+			contentLength = std::stoi(length);
+		}
+		catch (const std::exception&)
+		{
+			contentLength = -1;
+		}
+	}
+	return contentLength;
+}
