@@ -1,5 +1,3 @@
 # WinHTTP examples
 
-HTTP Get example is checked in. Other HTTP verb example to come later.
-
-Tutorial to come later.
+Tutorial: [Making HTTP REST Request in C++ With WinHTTP](https://www.codeproject.com/Articles/5280036/Making-HTTP-REST-Request-in-Cplusplus-With-WinHTTP)
