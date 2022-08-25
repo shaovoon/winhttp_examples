@@ -9,6 +9,8 @@
 
 #include "WinHttpWrapper.h"
 #include <winhttp.h>
+#include "WinVersion.h"
+
 #pragma comment(lib, "Winhttp.lib")
 
 
@@ -111,12 +113,14 @@ bool WinHttpWrapper::HttpRequest::http(const std::wstring& verb, const std::wstr
 	HINTERNET hRequest = NULL;
 	BOOL bDone = FALSE;
 	DWORD dwProxyAuthScheme = 0;
+	DWORD dwAccessType = WinVersion::IsBuildNumGreaterOrEqual(9600) ? 
+		WINHTTP_ACCESS_TYPE_AUTOMATIC_PROXY : WINHTTP_ACCESS_TYPE_DEFAULT_PROXY;
 
 	dwStatusCode = 0;
 
 	// Use WinHttpOpen to obtain a session handle.
 	hSession = WinHttpOpen(user_agent.c_str(),
-		WINHTTP_ACCESS_TYPE_AUTOMATIC_PROXY,
+		dwAccessType,
 		WINHTTP_NO_PROXY_NAME,
 		WINHTTP_NO_PROXY_BYPASS, 0);
 

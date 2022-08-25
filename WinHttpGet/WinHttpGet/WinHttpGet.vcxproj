@@ -153,9 +153,11 @@
   <ItemGroup>
     <ClCompile Include="usage.cpp" />
     <ClCompile Include="WinHttpWrapper.cpp" />
+    <ClCompile Include="WinVersion.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WinHttpWrapper.h" />
+    <ClInclude Include="WinVersion.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

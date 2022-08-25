@@ -21,9 +21,15 @@
     <ClCompile Include="WinHttpWrapper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="WinVersion.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WinHttpWrapper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WinVersion.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
