@@ -260,8 +260,10 @@ bool WinHttpWrapper::HttpRequest::http(const std::wstring& verb, const std::wstr
 				// Check for available data.
 				dwSize = 0;
 				if (!WinHttpQueryDataAvailable(hRequest, &dwSize))
+				{
 					error = L"Error in WinHttpQueryDataAvailable: ";
-				error += std::to_wstring(GetLastError());
+					error += std::to_wstring(GetLastError());
+				}
 
 				dwContent += dwSize;
 				if (dwSize == 0)
