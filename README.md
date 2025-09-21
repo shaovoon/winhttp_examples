@@ -112,7 +112,7 @@ response.Reset();
 
 The output is below:
 
-```Cpp
+```
 Action: Create Product with Id = 1
 Returned Status:200
 ```
@@ -130,7 +130,7 @@ response.Reset();
 
 The output is below:
 
-```Cpp
+```
 Action: Retrieve the product with id = 1
 Returned Text:{"Id":1,"Name":"ElectricFan","Qty":14,"Price":20.90}
 ```
@@ -151,7 +151,7 @@ response.Reset();
 
 The output is below:
 
-<pre lang="text">
+```
 Action: Update Product with Id = 1
 Returned Status:200
 ```
@@ -169,7 +169,7 @@ response.Reset();
 
 The output is below:
 
-<pre lang="text">
+```
 Action: Retrieve all products
 Returned Text:[{"Id":1,"Name":"ElectricFan","Qty":15,"Price":29.80}]
 ```
@@ -187,7 +187,7 @@ response.Reset();
 
 The output is below:
 
-<pre lang="text">
+```
 Action: Delete the product with id = 1
 Returned Status:200
 ```
@@ -205,7 +205,7 @@ response.Reset();
 
 The output is below:
 
-<pre lang="text">
+```
 Action: Retrieve all products
 Returned Text:[]
 ```
